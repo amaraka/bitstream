@@ -1029,15 +1029,17 @@ static void handle_section(uint16_t i_pid, uint8_t *p_section)
         handle_sit_section(i_pid, p_section);
         break;
 
-    case EIT_TABLE_ID_PF_ACTUAL:
-        handle_eit_section(i_pid, p_section);
-        break;
-
     case SCTE35_TABLE_ID:
         handle_scte35_section(i_pid, p_section);
         break;
 
     default:
+        if ((i_table_id == EIT_TABLE_ID_PF_ACTUAL || (i_table_id >= EIT_TABLE_ID_SCHED_ACTUAL_FIRST && i_table_id <= EIT_TABLE_ID_SCHED_ACTUAL_LAST)) ||
+            (i_table_id == EIT_TABLE_ID_PF_OTHER || (i_table_id >= EIT_TABLE_ID_SCHED_OTHER_FIRST && i_table_id <= EIT_TABLE_ID_SCHED_OTHER_LAST)))
+        {
+           handle_eit_section(i_pid, p_section);
+           break;
+        }
         free( p_section );
         break;
     }
